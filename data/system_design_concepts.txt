@@ -1,0 +1,279 @@
+SYSTEM DESIGN CONCEPTS — RAG SAMPLE DOCUMENT
+
+1.  What Is System Design? System design is the process of defining the
+    architecture, components, interfaces, and data flow of a software
+    system. It helps engineers build applications that are scalable,
+    reliable, maintainable, secure, and cost-effective.
+
+System design is commonly divided into two levels: - High-Level Design
+(HLD): Describes the overall architecture, major services, databases,
+APIs, and how components communicate. - Low-Level Design (LLD):
+Describes the internal design of individual components, classes,
+methods, data structures, and design patterns.
+
+2.  Scalability Scalability is a system’s ability to handle increased
+    workload by adding resources.
+
+Vertical scaling (scaling up) means increasing the capacity of one
+machine, such as adding more CPU or RAM. It is simple to implement but
+has hardware limits and may create a single point of failure.
+
+Horizontal scaling (scaling out) means adding more machines or
+instances. It can support larger workloads and improve fault tolerance,
+but requires coordination, load balancing, and distributed-system
+techniques.
+
+3.  Availability and Reliability Availability describes how often a
+    service is operational and accessible. It is often expressed as a
+    percentage of total time.
+
+Reliability describes the probability that a system performs correctly
+for a specified period. A service may be available but still return
+incorrect results, so availability and reliability are related but
+different concepts.
+
+Redundancy improves availability by providing duplicate instances or
+components. Health checks can detect unhealthy instances, and failover
+can redirect requests to healthy alternatives.
+
+4.  Load Balancing A load balancer distributes incoming requests across
+    multiple servers. It helps prevent one server from becoming
+    overloaded and can improve availability and response time.
+
+Common load-balancing strategies include: - Round robin: Sends requests
+to servers in sequence. - Least connections: Sends a request to the
+server with the fewest active connections. - Weighted routing: Sends
+more traffic to servers with greater assigned capacity. - Consistent
+hashing: Maps requests or keys to servers in a way that minimizes
+remapping when servers change.
+
+A load balancer may operate at Layer 4, using transport-level
+information such as IP addresses and ports, or Layer 7, using
+application-level information such as HTTP paths and headers.
+
+5.  Latency and Throughput Latency is the time required to complete an
+    operation, usually measured in milliseconds. Throughput is the
+    amount of work completed per unit of time, such as requests per
+    second.
+
+Low latency is important for interactive applications. High throughput
+is important for systems that process large volumes of requests or
+events. Improving one does not automatically improve the other.
+
+Engineers commonly measure average latency as well as percentiles such
+as p95 and p99. Percentiles help reveal slow experiences that averages
+can hide.
+
+6.  Caching A cache stores frequently accessed data in a faster storage
+    layer to reduce response time and decrease load on databases or
+    external services.
+
+Caches can exist in browsers, content delivery networks, application
+servers, and distributed systems such as Redis.
+
+Common caching strategies: - Cache-aside: The application checks the
+cache first. On a miss, it reads from the database and then populates
+the cache. - Write-through: Data is written to the cache and backing
+store as part of the write operation. - Write-back: Data is written to
+the cache first and persisted to the backing store later.
+
+Cache invalidation is the process of ensuring cached data does not
+remain stale indefinitely. Common techniques include time-to-live (TTL),
+explicit deletion, and versioned cache keys. Caching improves
+performance but introduces consistency and invalidation challenges.
+
+7.  Database Fundamentals A relational database stores structured data
+    in tables and commonly uses SQL. Examples include PostgreSQL and
+    MySQL. Relational databases are useful when transactions,
+    relationships, and constraints are important.
+
+A NoSQL database is a broad category that includes document, key-value,
+wide-column, and graph databases. These databases may be useful for
+flexible schemas, high-volume workloads, or specialized access patterns.
+
+The choice of database should depend on query patterns, consistency
+requirements, data relationships, scale, operational complexity, and
+team expertise—not simply on whether a database is SQL or NoSQL.
+
+8.  Database Indexes An index is a data structure that helps a database
+    find rows without scanning an entire table. Indexes can speed up
+    reads but consume storage and add overhead to inserts, updates, and
+    deletes.
+
+Indexes should be designed around common query filters, joins, and
+sorting operations. An index is not automatically beneficial for every
+column, particularly columns with low selectivity or columns that change
+frequently.
+
+9.  Replication and Partitioning Replication stores copies of data on
+    multiple database nodes. It can improve read capacity and
+    availability. In primary-replica replication, writes commonly go to
+    the primary node while replicas serve some reads.
+
+Replication may be synchronous or asynchronous. Asynchronous replication
+can introduce replication lag, meaning a replica may temporarily return
+older data.
+
+Partitioning divides a large dataset into smaller parts. Sharding is a
+form of horizontal partitioning in which different subsets of data are
+stored on different machines. A good shard key distributes load evenly
+and supports common queries. A poor shard key can create hot spots or
+require expensive cross-shard operations.
+
+10. CAP Theorem The CAP theorem states that during a network partition,
+    a distributed data system must make a trade-off between consistency
+    and availability.
+
+Consistency in CAP means that every successful read sees the latest
+successful write. Availability means that every request to a non-failing
+node receives a response. Partition tolerance means the system continues
+operating despite communication failures between nodes.
+
+In real distributed systems, network partitions cannot always be
+avoided. The design decision is therefore often about how the system
+behaves during a partition: favoring consistency or favoring
+availability.
+
+11. Consistency Models Strong consistency means that after a write
+    completes, subsequent reads observe that write according to the
+    system’s consistency guarantees.
+
+Eventual consistency means that if no new updates occur, replicas will
+eventually converge to the same value. During convergence, different
+clients may temporarily observe different values.
+
+Applications such as banking ledgers may require strong consistency for
+critical operations. Social feeds, likes, and view counts may tolerate
+eventual consistency depending on product requirements.
+
+12. Message Queues and Asynchronous Processing A message queue allows
+    one service to send work to another service without requiring the
+    receiving service to process it immediately. Examples include
+    RabbitMQ, Apache Kafka, and cloud-managed queue services.
+
+Queues help absorb traffic spikes, decouple services, and support
+retries. A typical flow is: an API accepts a request, stores or
+publishes a job, returns a job identifier, and a worker processes the
+job in the background.
+
+Consumers should be designed for duplicate delivery. Idempotency means
+processing the same operation more than once has the same intended
+effect as processing it once. Retries should use limits and backoff, and
+repeatedly failing messages may be moved to a dead-letter queue.
+
+13. Microservices and Monoliths A monolithic architecture packages much
+    of an application into one deployable unit. It is often simpler to
+    develop, test, and operate at the beginning of a project.
+
+A microservices architecture splits a system into independently
+deployable services organized around business capabilities. It can
+enable independent scaling and team ownership, but adds network calls,
+observability needs, deployment complexity, and distributed-data
+challenges.
+
+Microservices are not automatically better. A modular monolith may be a
+better starting point when the domain and team are small or requirements
+are changing quickly.
+
+14. API Design An API defines how software components communicate. REST
+    APIs commonly use HTTP methods such as GET to retrieve data, POST to
+    create or submit work, PUT to replace a resource, PATCH to partially
+    update a resource, and DELETE to remove a resource.
+
+Good API design uses consistent resource names, appropriate status
+codes, validation, pagination, clear error responses, and versioning
+when necessary.
+
+Rate limiting restricts how frequently a client can call an API. It
+helps protect services from abuse and overload. Common algorithms
+include fixed window, sliding window, and token bucket.
+
+15. Authentication and Authorization Authentication verifies who a user
+    or service is. Authorization determines what that identity is
+    allowed to do.
+
+Security practices include using HTTPS, storing passwords with a
+suitable password-hashing algorithm, validating input, applying least
+privilege, rotating secrets, and avoiding sensitive information in logs.
+
+API keys, sessions, and tokens serve different purposes. Tokens should
+have appropriate expiration and validation. Authorization checks should
+be performed on the server, even when the frontend hides unavailable
+actions.
+
+16. Content Delivery Networks A Content Delivery Network (CDN) serves
+    content from geographically distributed edge locations closer to
+    users. CDNs are commonly used for images, videos, JavaScript, CSS,
+    and cacheable API responses.
+
+A CDN can reduce latency and origin-server load. Cache-control headers
+determine how content may be cached. Frequently changing or private
+content requires careful cache policies to avoid stale data or
+accidental data exposure.
+
+17. Object Storage Object storage stores data as objects inside buckets
+    or containers. It is commonly used for images, documents, backups,
+    logs, and large files.
+
+Applications often upload files directly to object storage using
+short-lived signed URLs. The application should validate file size and
+type, restrict access, scan untrusted uploads when appropriate, and
+avoid exposing private buckets publicly.
+
+18. Observability Observability helps engineers understand a system’s
+    internal state from its outputs. The three common pillars are logs,
+    metrics, and traces.
+
+Logs record events. Metrics summarize numerical measurements such as
+request rate, error rate, CPU utilization, and latency. Distributed
+traces show how a request travels through multiple services.
+
+Useful alerts should focus on user impact and actionable symptoms.
+Dashboards and alerts should help teams diagnose issues without creating
+excessive noise.
+
+19. Fault Tolerance and Disaster Recovery Fault tolerance is a system’s
+    ability to continue providing acceptable service when components
+    fail. Techniques include redundancy, timeouts, retries, circuit
+    breakers, bulkheads, and graceful degradation.
+
+A circuit breaker temporarily stops calls to a failing dependency so the
+caller does not repeatedly waste resources. A timeout limits how long a
+request waits. Retries should be used carefully because retries during
+an outage can increase load.
+
+Disaster recovery planning defines how a service is restored after a
+major disruption. Recovery Time Objective (RTO) is the target maximum
+time to restore service. Recovery Point Objective (RPO) is the target
+maximum amount of data loss measured in time.
+
+20. A Practical Design Process When answering a system design interview
+    question, use this sequence:
+21. Clarify functional requirements: what users must be able to do.
+22. Clarify non-functional requirements: scale, latency, availability,
+    consistency, security, and cost.
+23. Estimate traffic and storage when useful.
+24. Define APIs and core data models.
+25. Draw the high-level architecture and explain request flows.
+26. Identify bottlenecks and discuss caching, queues, replication, or
+    partitioning where justified.
+27. Explain failure handling, security, monitoring, and trade-offs.
+28. Summarize the main decisions and mention how the design could
+    evolve.
+
+Example: URL Shortener A URL shortener accepts a long URL and returns a
+short code. When a user opens the short URL, the service looks up the
+code and redirects the user to the original URL.
+
+A simple architecture includes an API service, a database mapping short
+codes to long URLs, a cache for frequently used mappings, and
+monitoring. The short code must be unique, and the service should
+validate input URLs, apply rate limits, and protect against abuse.
+
+The read path may be much more frequent than the write path, so caching
+popular mappings can reduce database load. If traffic grows, the
+database can be replicated or partitioned based on access patterns. The
+design should also consider link expiration, analytics, custom aliases,
+and abuse reporting.
+
+END OF DOCUMENT
