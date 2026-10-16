@@ -23,3 +23,6 @@ build/
 
 # ChromaDB persistent storage
 notebooks/Vector_db/
+
+# Local SQLite databases
+*.db
