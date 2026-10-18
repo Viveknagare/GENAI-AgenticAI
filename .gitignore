@@ -27,5 +27,5 @@ notebooks/Vector_db/
 # Local SQLite databases
 *.db
 
-# ChromaDB persistent storage
-data/Application.pdf/
+data/Application.pdf
+data/*.pdf
