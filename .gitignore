@@ -27,5 +27,6 @@ notebooks/Vector_db/
 # Local SQLite databases
 *.db
 
+# Ignore the specific PDF file
 data/Application.pdf
 data/*.pdf
