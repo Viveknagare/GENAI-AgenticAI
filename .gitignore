@@ -30,3 +30,4 @@ notebooks/Vector_db/
 # Ignore the specific PDF file
 data/Application.pdf
 data/*.pdf
+apps/doc_files
